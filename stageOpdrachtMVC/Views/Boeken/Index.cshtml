@@ -1,0 +1,143 @@
+﻿@model CombinedViewModel
+
+
+
+<style>
+    .bestelForm{
+        display: none;
+        width: 50%;
+        margin-left:auto;
+        margin-right: auto;
+    }
+</style>
+<h1>
+    Boeken
+</h1>
+@Html.ActionLink("Nieuw boek", "Add")
+<table class="table">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Titel</th>
+            <th>Auteur</th>
+            <th>Prijs</th>
+            <th>Publicatie jaar</th>
+            <th>Voorraad</th>
+            <th>Actions</th>
+            <th>Voeg toe</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        @foreach (var boeken in Model.BoekenList)
+        {
+            <tr>
+            <td>@boeken.id</td>
+            <td>@boeken.title</td>
+            <td>@boeken.auteur</td>
+            <td>@boeken.prijs</td>
+            <td>@boeken.publicatieJaar</td>
+            <td>@boeken.voorraad</td>
+            <td><a href="Boeken/Edit/@boeken.id">Zie meer</a></td>
+            <td><button data-title="@boeken.title" data-prijs="@boeken.prijs" value="@boeken.id" class="boekenId">+</button></td>
+            </tr>
+            
+        }
+    </tbody>
+</table>
+
+<button id="klikId">Bestel</button>
+
+<form id="bestelForm" class="bestelForm" method="post" asp-action="Index" >
+  <div class="mb-3">
+    <label for="" class="form-label">Naam</label>
+    <input type="text" class="form-control" name="Name" asp-for="BestellingenModel.Name" required>
+  </div>
+  <div class="mb-3">
+    <label for="" class="form-label">Email</label>
+    <input type="email" class="form-control" name="Email" asp-for="BestellingenModel.Email" required/>
+  </div>
+  <div class="mb-3">
+    <label for="" class="form-label">Postcode</label>
+    <input type="text" class="form-control" name="Postcode" asp-for="BestellingenModel.Postcode" required>
+  </div>
+  <div class="mb-3">
+    <label for="" class="form-label">Producten</label>
+    <div id="productenTitle" class="form-control"></div>
+    <input id="productenId" type="text" class="form-control" name="Producten" asp-for="BestellingenModel.Producten" hidden readonly>
+  </div>
+  <div class="mb-3">
+    <label for="" class="form-label">Totale prijs</label>
+    <input id="totalePrijsId" type="text" class="form-control" name="TotalePrijs" asp-for="BestellingenModel.TotalePrijs" readonly>
+  </div>
+   <div class="mb-3">
+       <!--datum-->
+    <input id="datumId" type="text" class="form-control" name="Datum" asp-for="BestellingenModel.Datum" hidden readonly>
+  </div>
+  <div class="mb-3">
+      <!--verwerkt-->
+    <input value="False" type="text" class="form-control" name="Verwerkt" asp-for="BestellingenModel.Verwerkt" hidden readonly/>
+  </div>
+
+    <button type="submit" class="btn btn-primary">Submit</button>
+
+</form>
+
+<script>
+    //form
+    let klik = document.getElementById("klikId");
+    klik.addEventListener("click", myFuntion);
+
+    function myFuntion(){
+        let form = document.getElementById("bestelForm")
+        if(form.style.display == "block"){
+           form.style.display = "none";
+        }
+        else{
+            form.style.display = "block";
+        }    
+    }
+  //producten toevoegen & totale prijs
+    let productenTitle = document.getElementById("productenTitle");
+    let totaleprijsId = document.getElementById("totalePrijsId");
+    let totaleprijs = 0;
+    let producten = document.getElementById("productenId");
+    let buttons = document.querySelectorAll(".boekenId");
+    buttons.forEach(function(button) {
+    button.addEventListener("click", myFunction2);
+});
+
+    function myFunction2(event) {
+        //producten id
+        let clickedButton = event.currentTarget;
+        let buttonValue = clickedButton.value;
+        producten.value += buttonValue + "/";
+
+        //producten titel
+        let title = clickedButton.getAttribute("data-title");
+        let heleTitle = "- " + title + "<br>";
+        productenTitle.innerHTML += heleTitle;
+
+        //totale prijs
+        let prijsMetKomma = clickedButton.getAttribute("data-prijs"); 
+    let prijs = parseFloat(prijsMetKomma.replace(',', '.')); 
+    totaleprijs += prijs;
+    let totaleprijsString = totaleprijs.toLocaleString('nl-NL', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+
+    totaleprijsId.value = totaleprijsString;    
+    }
+
+  //datum
+    let datum = document.getElementById("datumId");
+    let currentDate = new Date();
+    let dagNep = currentDate.getDate();
+    let dag = String(dagNep).padStart(2, '0');
+    let maand = currentDate.getMonth() + 1;
+    let jaar = currentDate.getFullYear();
+    let uur = currentDate.getHours();
+    let min = currentDate.getMinutes();
+    let currentDateValue = dag + "-" + maand + "-" + jaar + " " + uur + ":" + min;
+
+    datum.value = currentDateValue;
+   
+</script>

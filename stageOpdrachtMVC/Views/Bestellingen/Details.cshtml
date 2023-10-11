@@ -1,0 +1,42 @@
+﻿@model stageOpdrachtMVC.Models.DetailBestellingenModel;
+@{
+}
+
+<form method="post" action="Details">
+  <div class="mb-3">
+    <label for="" class="form-label">Id</label>
+    <input type="text" class="form-control" asp-for="Id" readonly>
+  </div>
+  <div class="mb-3">
+    <label for="" class="form-label">Naam</label>
+    <input type="text" class="form-control" asp-for="Name" readonly>
+  </div>
+  <div class="mb-3">
+    <label for="" class="form-label">Email</label>
+    <input type="text" class="form-control" asp-for="Email" readonly>
+  </div>
+  <div class="mb-3">
+    <label for="" class="form-label">Postcode</label>
+    <input type="text" class="form-control" asp-for="Postcode" readonly>
+  </div>
+  <div class="mb-3">
+    <label for="" class="form-label">Producten</label>
+    <input type="text" class="form-control" asp-for="Producten" readonly>
+  </div>
+  <div class="mb-3">
+    <label for="" class="form-label">Totale prijs</label>
+    <input type="text" class="form-control" asp-for="TotalePrijs" readonly>
+  </div>
+   <div class="mb-3">
+    <label for="" class="form-label">Datum</label>
+    <input type="text" class="form-control" asp-for="Datum" readonly>
+  </div>
+  <div class="mb-3">
+    <label for="" class="form-label">Verwerkt</label>
+    <select asp-for="Verwerkt">
+        <option value="True">True</option>
+        <option value="False">False</option>
+    </select>
+  </div>
+  <button type="submit" class="btn btn-primary">Submit</button>
+</form>

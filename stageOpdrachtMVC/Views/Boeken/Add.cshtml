@@ -1,0 +1,26 @@
+﻿@model stageOpdrachtMVC.Models.AddBoekenModel
+
+
+<form method="post" action="Add">
+  <div class="mb-3">
+    <label for="" class="form-label">Titel</label>
+    <input type="text" class="form-control" asp-for="title" required>
+  </div>
+  <div class="mb-3">
+    <label for="" class="form-label">Auteur</label>
+    <input type="text" class="form-control" asp-for="auteur" required>
+  </div>
+  <div class="mb-3">
+    <label for="" class="form-label">Prijs</label>
+    <input type="text" class="form-control" asp-for="prijs" required>
+  </div>
+  <div class="mb-3">
+    <label for="" class="form-label">Publicatie jaar</label>
+    <input type="number" class="form-control" asp-for="publicatieJaar" required>
+  </div>
+  <div class="mb-3">
+    <label for="" class="form-label">Voorraad</label>
+    <input type="text" class="form-control" asp-for="voorraad" required>
+  </div>
+  <button type="submit" class="btn btn-primary">Submit</button>
+</form>

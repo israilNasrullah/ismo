@@ -1,0 +1,35 @@
+﻿@model List<stageOpdrachtMVC.Models.Bestellingen.Bestellingen>
+@{
+}
+<table class="table">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Naam</th>
+            <th>Email</th>
+            <th>Postcode</th>
+            <th>Producten(ID)</th>
+            <th>Totale prijs</th>
+            <th>Datum</th>
+            <th>Verwerkt</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        @foreach (var bestellingen in Model)
+        {
+            <tr>
+            <td>@bestellingen.Id</td>
+            <td>@bestellingen.Name</td>
+            <td>@bestellingen.Email</td>
+            <td>@bestellingen.Postcode</td>
+            <td>@bestellingen.Producten</td>
+            <td>@bestellingen.TotalePrijs</td>
+            <td>@bestellingen.Datum</td>
+            <td>@bestellingen.Verwerkt</td>
+            <td><a href="Bestellingen/Details/@bestellingen.Id">Details</a></td>
+            </tr>
+        }
+    </tbody>
+</table>
