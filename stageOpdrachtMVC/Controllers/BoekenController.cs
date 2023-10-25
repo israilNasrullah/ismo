@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using stageOpdrachtMVC.Models.Domain;
 using stageOpdrachtMVC.Models.BestellingenDb;
 using System.Net.Http.Json;
+using Microsoft.AspNetCore.Authorization;
 
 namespace stageOpdrachtMVC.Controllers
 {
@@ -68,7 +69,7 @@ namespace stageOpdrachtMVC.Controllers
             };
 
            
-            bestellingenDbContext.Bestellingen.Add(bestellingen);
+            bestellingenDbContext.Bestellingens.Add(bestellingen);
             await bestellingenDbContext.SaveChangesAsync();
 
             
@@ -79,7 +80,7 @@ namespace stageOpdrachtMVC.Controllers
             {
                 if (int.TryParse(productId, out int bookId))
                 {
-                    var book = await applicationDbContext.Boeken.FindAsync(bookId);
+                    var book = await applicationDbContext.Boekens.FindAsync(bookId);
                     book.voorraad--;  
                 }
             }
@@ -141,7 +142,7 @@ namespace stageOpdrachtMVC.Controllers
         [HttpGet]
         public async Task<IActionResult> Edit(int id)
         {
-            var boek = applicationDbContext.Boeken.FirstOrDefault(x => x.id == id);
+            var boek = applicationDbContext.Boekens.FirstOrDefault(x => x.id == id);
 
             if(boek != null)
             {

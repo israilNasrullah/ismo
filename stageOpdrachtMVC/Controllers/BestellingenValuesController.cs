@@ -16,7 +16,7 @@ namespace stageOpdrachtMVC.Controllers
             var bestellingenInfo = new List<Models.Bestellingen.Bestellingen>();
             using(var context = new BestellingenDbContext())
             {
-                bestellingenInfo = context.Bestellingen.ToList();
+                bestellingenInfo = context.Bestellingens.ToList();
             }
             return bestellingenInfo;
         }
@@ -25,7 +25,7 @@ namespace stageOpdrachtMVC.Controllers
         {
             using(var context = new BestellingenDbContext())
             {
-                IQueryable<Models.Bestellingen.Bestellingen> bestellingenInfo = context.Bestellingen;
+                IQueryable<Models.Bestellingen.Bestellingen> bestellingenInfo = context.Bestellingens;
                 if (id.HasValue)
                 {
                     bestellingenInfo = bestellingenInfo.Where(e => e.Id == id);
@@ -53,7 +53,7 @@ namespace stageOpdrachtMVC.Controllers
                         if (int.TryParse(productenId, out int bookId))
                         {
                                 
-                            var book = await contextRead.Boeken.FindAsync(bookId);
+                            var book = await contextRead.Boekens.FindAsync(bookId);
                             totalePrijs += book.prijs;
                             book.voorraad--;
                                    
@@ -76,7 +76,7 @@ namespace stageOpdrachtMVC.Controllers
                         Datum = dateTimeString,
                         Verwerkt = addBestellingenRequest.Verwerkt
                     };
-                    context.Bestellingen.Add(bestellingen);
+                    context.Bestellingens.Add(bestellingen);
                     context.SaveChanges();
                 }
                 return true;

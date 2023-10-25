@@ -7,6 +7,7 @@ using System.Collections.Generic;
 
 namespace stageOpdrachtMVC.Controllers
 {
+
     [Route("api/Boeken")]
     [ApiController]
     public class ValuesController : ControllerBase
@@ -17,7 +18,7 @@ namespace stageOpdrachtMVC.Controllers
             var boekenInfo = new List<Models.Domain.Boeken>();
             using (var context = new ApplicationDbContext())
             {
-                boekenInfo = context.Boeken.ToList();
+                boekenInfo = context.Boekens.ToList();
             }
             return boekenInfo;
         }
@@ -26,7 +27,7 @@ namespace stageOpdrachtMVC.Controllers
         {
             using (var context = new ApplicationDbContext())
             {
-                IQueryable<Models.Domain.Boeken> boekenInfo = context.Boeken;
+                IQueryable<Models.Domain.Boeken> boekenInfo = context.Boekens;
 
                 if (id.HasValue)
                 {
@@ -43,8 +44,8 @@ namespace stageOpdrachtMVC.Controllers
             {
                 using (var context = new ApplicationDbContext())
                 {
-                    var boekenInfo = context.Boeken.Where(e => e.id == id).FirstOrDefault();
-                    context.Boeken.Remove(boekenInfo);
+                    var boekenInfo = context.Boekens.Where(e => e.id == id).FirstOrDefault();
+                    context.Boekens.Remove(boekenInfo);
                     context.SaveChanges();
                 }
                 return true;
@@ -71,7 +72,7 @@ namespace stageOpdrachtMVC.Controllers
                         publicatieJaar = addBoekenRequest.publicatieJaar,
                         voorraad = addBoekenRequest.voorraad
                     };
-                    context.Boeken.Add(Boeken);
+                    context.Boekens.Add(Boeken);
                     context.SaveChanges();
                 }
                 return true;
@@ -89,7 +90,7 @@ namespace stageOpdrachtMVC.Controllers
             {
                 using (var context = new ApplicationDbContext())
                 {
-                    var boeken = context.Boeken.FirstOrDefault(e => e.id == id);
+                    var boeken = context.Boekens.FirstOrDefault(e => e.id == id);
 
                     boeken.title = model.title;
                     boeken.auteur = model.auteur;
@@ -110,4 +111,3 @@ namespace stageOpdrachtMVC.Controllers
 
     }
     
-

@@ -1,11 +1,12 @@
 {
   "version": 2,
-  "dgSpecHash": "Em1bk0zsAisnH9GAG5e1oPHpDQYIvw3T2Yznd3m2sXeitRUAlh8WhsHh4tIolUJkzRlCga7WLWbiRqsdby58+Q==",
+  "dgSpecHash": "Q8BKR5/gr3e1VNNWuupf1iNjZ1LkGJq9BjsV8X1VdClD0aHYUHGFltrAcC3YqcKfk+eLb6Bcnn7Oti0cPrwaUA==",
   "success": true,
   "projectFilePath": "C:\\Users\\demo\\source\\repos\\StageOpdrachtMVC\\stageOpdrachtMVC\\stageOpdrachtMVC.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\demo\\.nuget\\packages\\azure.core\\1.25.0\\azure.core.1.25.0.nupkg.sha512",
     "C:\\Users\\demo\\.nuget\\packages\\azure.identity\\1.7.0\\azure.identity.1.7.0.nupkg.sha512",
+    "C:\\Users\\demo\\.nuget\\packages\\fluentassertions\\6.12.0\\fluentassertions.6.12.0.nupkg.sha512",
     "C:\\Users\\demo\\.nuget\\packages\\humanizer\\2.14.1\\humanizer.2.14.1.nupkg.sha512",
     "C:\\Users\\demo\\.nuget\\packages\\humanizer.core\\2.14.1\\humanizer.core.2.14.1.nupkg.sha512",
     "C:\\Users\\demo\\.nuget\\packages\\humanizer.core.af\\2.14.1\\humanizer.core.af.2.14.1.nupkg.sha512",

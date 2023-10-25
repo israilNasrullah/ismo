@@ -1,6 +1,4 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
-}
+﻿@model stageOpdrachtMVC.Models.InlogAccountModel
 
 <!DOCTYPE html>
 <html lang="nl">
@@ -55,11 +53,12 @@
 <body>
     <div class="container">
         <h2>Inloggen</h2>
-        <form>
-            <input type="text" placeholder="Gebruikersnaam" name="gebruikersnaam" required>
-            <input type="password" placeholder="Wachtwoord" name="wachtwoord" required>
-            <input type="submit" value="Inloggen">
-        </form>
+       <form method="post" asp-action="Index" asp-controller="Home">
+    <input type="text" placeholder="Gebruikersnaam" name="gebruikersnaam" asp-for="Username" required>
+    <input type="password" placeholder="Wachtwoord" name="wachtwoord" asp-for="Password" required>
+    <input type="submit" value="Inloggen">
+</form>
+
         @Html.ActionLink("Maak een nieuwe account!", "NewAccount")
     </div>
 </body>

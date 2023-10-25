@@ -15,14 +15,14 @@ namespace stageOpdrachtMVC.Controllers
         [HttpGet]
         public IActionResult Index()
         {
-            var bestelling = bestellingenDbContext.Bestellingen.ToList();
+            var bestelling = bestellingenDbContext.Bestellingens.ToList();
             return View(bestelling);
         }
 
         [HttpGet]
         public async Task<IActionResult> Details(int id)
         {
-            var bestelling = bestellingenDbContext.Bestellingen.FirstOrDefault(x => x.Id == id);
+            var bestelling = bestellingenDbContext.Bestellingens.FirstOrDefault(x => x.Id == id);
 
             if(bestelling != null)
             {
@@ -48,7 +48,7 @@ namespace stageOpdrachtMVC.Controllers
         [HttpPost]
         public async Task<IActionResult> Details(DetailBestellingenModel model)
         {
-            var bestelling = await bestellingenDbContext.Bestellingen.FindAsync(model.Id);
+            var bestelling = await bestellingenDbContext.Bestellingens.FindAsync(model.Id);
             if(bestelling != null)
             {
                 bestelling.Name = model.Name;
