@@ -1,4 +1,6 @@
-﻿<!DOCTYPE html>
+﻿@model stageOpdrachtMVC.Models.AddAccountModel;
+
+<!DOCTYPE html>
 <html lang="nl">
 <head>
     <meta charset="UTF-8">
@@ -52,14 +54,29 @@
 <body>
     <div class="container">
         <h2>Registratie</h2>
-        <form>
-            <input type="text" placeholder="Naam" name="naam" required>
-            <input type="email" placeholder="E-mailadres" name="email" required>
-            <input type="password" placeholder="Wachtwoord" name="wachtwoord" required>
+        <form action="NewAccount" method="post" onsubmit="return validateForm();">
+            <input type="text" placeholder="Naam" asp-for="Username" required>
+            <input type="email" placeholder="E-mailadres" asp-for="Email" required>
+            <input type="password" placeholder="Wachtwoord" asp-for="Password" required>
             <input type="password" placeholder="Herhaal Wachtwoord" name="herhaalwachtwoord" required>
             <input type="submit" value="Registreer">
         </form>
         @Html.ActionLink("Heb je een account. Log dan in!", "Index")
     </div>
+
+    <script>
+    function validateForm() {
+        var password = document.querySelector('input[name="Password"]').value;
+        var confirmPassword = document.querySelector('input[name="herhaalwachtwoord"]').value;
+
+        if (password !== confirmPassword) {
+            alert("Wachtwoord en herhaalwachtwoord komen niet overeen");
+            return false; 
+        }
+        
+        return true; 
+    }
+</script>
 </body>
 </html>
+
