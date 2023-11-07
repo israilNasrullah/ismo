@@ -32,14 +32,13 @@ namespace stageOpdrachtMVC.Controllers
             return null;
         }
 
-        
 
         [HttpGet]
         public IActionResult Index()
         {
-
-
-            // var   boekenList = applicationDbContext.Boeken.ToList();
+            if (HttpContext.Session.GetString("Ingelogd") == "true")
+            {
+                // var   boekenList = applicationDbContext.Boeken.ToList();
             var boekenList = GetFromAPI();
             var bestellingenModel = new AddBestellingenModel(); // Creëer een nieuw exemplaar van AddBestellingenModel.
 
@@ -50,6 +49,12 @@ namespace stageOpdrachtMVC.Controllers
             };
 
             return View(viewModel);
+            }
+            else
+            {
+                
+                return RedirectToAction("Index", "Home");
+            }
         }
 
         [HttpPost]
@@ -105,31 +110,47 @@ namespace stageOpdrachtMVC.Controllers
         [HttpGet]
         public IActionResult Add()
         {
-            return View();
+            if (HttpContext.Session.GetString("Admin") == "true")
+            {
+                return View();
+            }
+            else
+            {
+
+                return RedirectToAction("Index");
+            }
         }
 
         [HttpPost]
         public async Task<IActionResult> Add(AddBoekenModel addBoekenRequest)
         {
-            var Boeken = new Models.Domain.Boeken()
+            if (HttpContext.Session.GetString("Admin") == "true")
             {
-                id = 0,
-                title = addBoekenRequest.title,
-                auteur = addBoekenRequest.auteur,
-                prijs = addBoekenRequest.prijs,
-                publicatieJaar = addBoekenRequest.publicatieJaar,
-                voorraad = addBoekenRequest.voorraad
-            };
+                var Boeken = new Models.Domain.Boeken()
+                {
+                    id = 0,
+                    title = addBoekenRequest.title,
+                    auteur = addBoekenRequest.auteur,
+                    prijs = addBoekenRequest.prijs,
+                    publicatieJaar = addBoekenRequest.publicatieJaar,
+                    voorraad = addBoekenRequest.voorraad
+                };
 
-            HttpClient client = new HttpClient();
-            HttpResponseMessage response = client.PostAsJsonAsync<Models.Domain.Boeken>(_apiUrl, Boeken).GetAwaiter().GetResult();
-            
-            // AddByAPI(Boeken);
-            //  applicationDbContext.Boeken.Add(Boeken);
-            // await applicationDbContext.SaveChangesAsync();
+                HttpClient client = new HttpClient();
+                HttpResponseMessage response = client.PostAsJsonAsync<Models.Domain.Boeken>(_apiUrl, Boeken).GetAwaiter().GetResult();
 
-            return RedirectToAction("Index");
-        }
+                // AddByAPI(Boeken);
+                //  applicationDbContext.Boeken.Add(Boeken);
+                // await applicationDbContext.SaveChangesAsync();
+
+                return RedirectToAction("Index");
+            }
+            else
+            {
+
+                return RedirectToAction("Index");
+            }
+            }
 
 
 
@@ -142,7 +163,9 @@ namespace stageOpdrachtMVC.Controllers
         [HttpGet]
         public async Task<IActionResult> Edit(int id)
         {
-            var boek = applicationDbContext.Boekens.FirstOrDefault(x => x.id == id);
+            if (HttpContext.Session.GetString("Admin") == "true")
+            {
+                var boek = applicationDbContext.Boekens.FirstOrDefault(x => x.id == id);
 
             if(boek != null)
             {
@@ -158,12 +181,19 @@ namespace stageOpdrachtMVC.Controllers
                 return await Task.Run(() => View("Edit", editModel));
             }
 
-            return RedirectToAction("Index"); 
+            return RedirectToAction("Index");
+            }
+            else
+            {
+
+                return RedirectToAction("Index");
+            }
         }
+
 
         
 
-        [HttpPost]
+        [HttpPost]      
         public async Task<IActionResult> Edit(EditBoekenModel model)
         {
             

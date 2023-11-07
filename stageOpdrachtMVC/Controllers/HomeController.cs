@@ -7,6 +7,7 @@ using System.Security.Cryptography;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authorization;
 
 namespace stageOpdrachtMVC.Controllers
 {
@@ -33,9 +34,11 @@ namespace stageOpdrachtMVC.Controllers
             }
         }
 
+        private readonly ILogger<HomeController> _logger;
         private readonly AccountDbContext accountDbContext;
-        public HomeController()
+        public HomeController(ILogger<HomeController> logger)
         {
+            _logger = logger; // Injecteer de logger via de constructor
             this.accountDbContext = new AccountDbContext();
         }
 
@@ -69,45 +72,53 @@ namespace stageOpdrachtMVC.Controllers
         {
             return View();
         }
+
         [HttpPost]
         public async Task<IActionResult> Index(InlogAccountModel loginModel)
         {
-            // Voer validatie van gebruikersinvoer uit indien nodig.
+            
+                var hashedPassword = ComputeSha256Hash(loginModel.Password);
+                var user = accountDbContext.Accounts.FirstOrDefault(u => u.Username == loginModel.Username && u.Password == hashedPassword);
+                
 
-            var hashedPassword = ComputeSha256Hash(loginModel.Password);
-            var user = accountDbContext.Accounts.FirstOrDefault(u => u.Username == loginModel.Username && u.Password == loginModel.Password);
-
-            if (user != null)
-            {
-                var claims = new[]
+                if (user != null)
                 {
-            new Claim(ClaimTypes.Name, user.Username),
-            new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-            // Voeg eventuele andere claims toe op basis van de gebruikersrol of andere informatie.
-        };
+                    // Markeer de gebruiker als ingelogd in de sessie
+                    HttpContext.Session.SetString("Ingelogd", "true");
 
-                var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
-                var authProperties = new AuthenticationProperties
+                if (user.Admin)
                 {
-                    IsPersistent = true // Hiermee blijft de gebruiker ingelogd, tenzij ze zichzelf uitloggen.
-                };
+                    HttpContext.Session.SetString("Admin", "true");
+                    
+                }
+                else
+                {
+                    HttpContext.Session.SetString("Admin", "false");
+                    
+                }
 
-                await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity), authProperties);
+                    return RedirectToAction("Index", "Boeken");
+                }
 
-                return RedirectToAction("SecurePage");
-            }
-
-            // Als de inloggegevens onjuist zijn, toon een foutmelding.
-            ModelState.AddModelError(string.Empty, "Ongeldige inloggegevens.");
-            return View();
+                // Als inloggegevens onjuist zijn, toon een foutmelding
+                ViewBag.Foutmelding = "Ongeldige inloggegevens.";
+            
+                return View();
+            
+            
         }
+
 
         [HttpGet]
         public async Task<IActionResult> Logout()
         {
-            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+            // Markeer de gebruiker als uitgelogd in de sessie
+            HttpContext.Session.SetString("Ingelogd", "false");
+            HttpContext.Session.SetString("Admin", "false");
+
             return RedirectToAction("Index");
         }
+
 
         public IActionResult Privacy()
         {

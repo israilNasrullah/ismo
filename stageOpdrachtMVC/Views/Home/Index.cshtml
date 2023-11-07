@@ -1,4 +1,11 @@
 ﻿@model stageOpdrachtMVC.Models.InlogAccountModel
+@{
+    // Check if the ViewBag has the "Foutmelding" value
+    var foutmelding = ViewBag.Foutmelding as string;
+    
+
+
+}
 
 <!DOCTYPE html>
 <html lang="nl">
@@ -20,8 +27,9 @@
             background-color: #fff;
             border-radius: 5px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        }
 
+        }
+    
         h2 {
             margin-top: 0;
         }
@@ -51,16 +59,30 @@
     </style>
 </head>
 <body>
+  
     <div class="container">
         <h2>Inloggen</h2>
        <form method="post" asp-action="Index" asp-controller="Home">
-    <input type="text" placeholder="Gebruikersnaam" name="gebruikersnaam" asp-for="Username" required>
-    <input type="password" placeholder="Wachtwoord" name="wachtwoord" asp-for="Password" required>
+    <input type="text" placeholder="Gebruikersnaam" name="Username" asp-for="Username" required>
+    <input type="password" placeholder="Wachtwoord" name="Password" asp-for="Password" required>
     <input type="submit" value="Inloggen">
 </form>
 
         @Html.ActionLink("Maak een nieuwe account!", "NewAccount")
+
+     @if (!string.IsNullOrEmpty(foutmelding))
+{
+    <div class="alert alert-danger">
+        @foutmelding
+
     </div>
+    
+    
+}
+       
+    </div>
+    
+    
 </body>
 </html>
 

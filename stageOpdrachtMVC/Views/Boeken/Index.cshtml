@@ -1,4 +1,7 @@
 ﻿@model CombinedViewModel
+@using Microsoft.AspNetCore.Http
+@inject IHttpContextAccessor _httpContext
+
 
 
 
@@ -9,11 +12,22 @@
         margin-left:auto;
         margin-right: auto;
     }
+    .boekenContainer{
+          /* Existing styles */
+    transform: translateY(100%); /* Initial position */
+    opacity: 0; /* Initially hidden */
+    transition: transform 1s ease, opacity 1s ease; /* Transition properties */
+    }
 </style>
+<div class="boekenContainer">
 <h1>
     Boeken
 </h1>
-@Html.ActionLink("Nieuw boek", "Add")
+@if(_httpContext.HttpContext.Session.GetString("Admin") == "true")
+    {
+        @Html.ActionLink("Nieuw boek", "Add")
+    }
+    
 <table class="table">
     <thead>
         <tr>
@@ -23,7 +37,10 @@
             <th>Prijs</th>
             <th>Publicatie jaar</th>
             <th>Voorraad</th>
-            <th>Actions</th>
+                @if(_httpContext.HttpContext.Session.GetString("Admin") == "true")
+                {
+                    <th>Actions</th>
+                }
             <th>Voeg toe</th>
         </tr>
     </thead>
@@ -38,7 +55,11 @@
             <td>@boeken.prijs</td>
             <td>@boeken.publicatieJaar</td>
             <td>@boeken.voorraad</td>
-            <td><a href="Boeken/Edit/@boeken.id">Zie meer</a></td>
+            @if(_httpContext.HttpContext.Session.GetString("Admin") == "true")
+                    {
+                        <td><a href="Boeken/Edit/@boeken.id">Zie meer</a></td>
+                    }
+                    
             <td><button data-title="@boeken.title" data-prijs="@boeken.prijs" value="@boeken.id" class="boekenId">+</button></td>
             </tr>
             
@@ -82,8 +103,19 @@
     <button type="submit" class="btn btn-primary">Submit</button>
 
 </form>
-
+</div>
 <script>
+    document.addEventListener("DOMContentLoaded", function () {
+    // Get the container element
+    var container = document.querySelector(".boekenContainer");
+
+    // Delay the animation slightly to ensure it starts after the page is fully loaded
+    setTimeout(function () {
+        // Apply the animation by changing the transform and opacity
+        container.style.transform = "translateX(0)";
+        container.style.opacity = "1";
+    }, 100);
+});
     //form
     let klik = document.getElementById("klikId");
     klik.addEventListener("click", myFuntion);

@@ -10,7 +10,13 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+builder.Services.AddHttpContextAccessor();
 
+// Configure sessions
+builder.Services.AddSession(options =>
+{
+    options.IdleTimeout = TimeSpan.FromMinutes(20); // Set the session timeout
+});
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -23,6 +29,9 @@ if (!app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
+
+// Add session support to the application
+app.UseSession();
 
 app.UseRouting();
 

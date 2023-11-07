@@ -15,9 +15,17 @@ namespace stageOpdrachtMVC.Controllers
         [HttpGet]
         public IActionResult Index()
         {
-            var bestelling = bestellingenDbContext.Bestellingens.ToList();
-            return View(bestelling);
-        }
+            if (HttpContext.Session.GetString("Admin") == "true")
+            {
+                var bestelling = bestellingenDbContext.Bestellingens.ToList();
+                return View(bestelling);
+            }
+            else
+            {
+
+                return RedirectToAction("Index", "Home");
+            }
+            }
 
         [HttpGet]
         public async Task<IActionResult> Details(int id)
