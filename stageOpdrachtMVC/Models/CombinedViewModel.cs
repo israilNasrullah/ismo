@@ -2,7 +2,7 @@
 {
     public class CombinedViewModel
     {
-        public List<Domain.Boeken> BoekenList { get; set; }
+        public List<Boeken> BoekenList { get; set; }
         public AddBestellingenModel BestellingenModel { get; set; }
     }
 }

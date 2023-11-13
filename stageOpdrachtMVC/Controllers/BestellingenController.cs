@@ -1,15 +1,14 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using stageOpdrachtMVC.Models.BestellingenDb;
-using stageOpdrachtMVC.Models.Bestellingen;
 using stageOpdrachtMVC.Models;
 namespace stageOpdrachtMVC.Controllers
 {
     public class BestellingenController : Controller
     {
-        private readonly BestellingenDbContext bestellingenDbContext;
+        private readonly ApplicationDbContext applicationDbContext;
         public BestellingenController()
         {
-            this.bestellingenDbContext = new BestellingenDbContext();
+            this.applicationDbContext = new ApplicationDbContext();
         }
 
         [HttpGet]
@@ -17,7 +16,7 @@ namespace stageOpdrachtMVC.Controllers
         {
             if (HttpContext.Session.GetString("Admin") == "true")
             {
-                var bestelling = bestellingenDbContext.Bestellingens.ToList();
+                var bestelling = applicationDbContext.Bestellingens.ToList();
                 return View(bestelling);
             }
             else
@@ -30,7 +29,7 @@ namespace stageOpdrachtMVC.Controllers
         [HttpGet]
         public async Task<IActionResult> Details(int id)
         {
-            var bestelling = bestellingenDbContext.Bestellingens.FirstOrDefault(x => x.Id == id);
+            var bestelling = applicationDbContext.Bestellingens.FirstOrDefault(x => x.Id == id);
 
             if(bestelling != null)
             {
@@ -56,7 +55,7 @@ namespace stageOpdrachtMVC.Controllers
         [HttpPost]
         public async Task<IActionResult> Details(DetailBestellingenModel model)
         {
-            var bestelling = await bestellingenDbContext.Bestellingens.FindAsync(model.Id);
+            var bestelling = await applicationDbContext.Bestellingens.FindAsync(model.Id);
             if(bestelling != null)
             {
                 bestelling.Name = model.Name;
@@ -67,7 +66,7 @@ namespace stageOpdrachtMVC.Controllers
                 bestelling.Datum = model.Datum;
                 bestelling.Verwerkt = model.Verwerkt;
 
-                await bestellingenDbContext.SaveChangesAsync();
+                await applicationDbContext.SaveChangesAsync();
                 return RedirectToAction("Index");
             }
             return RedirectToAction("Index");

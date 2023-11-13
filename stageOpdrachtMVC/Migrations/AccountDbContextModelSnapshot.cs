@@ -9,7 +9,7 @@ using stageOpdrachtMVC.Models;
 
 namespace stageOpdrachtMVC.Migrations
 {
-    [DbContext(typeof(AccountDbContext))]
+    [DbContext(typeof(ApplicationDbContext))]
     partial class AccountDbContextModelSnapshot : ModelSnapshot
     {
         protected override void BuildModel(ModelBuilder modelBuilder)

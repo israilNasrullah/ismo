@@ -11,21 +11,21 @@ namespace stageOpdrachtMVC.Controllers
     public class BestellingenValuesController : ControllerBase
     {
         [HttpGet]
-        public IEnumerable<Models.Bestellingen.Bestellingen> BestellingenList()
+        public IEnumerable<Bestellingen> BestellingenList()
         {
-            var bestellingenInfo = new List<Models.Bestellingen.Bestellingen>();
-            using(var context = new BestellingenDbContext())
+            var bestellingenInfo = new List<Bestellingen>();
+            using(var context = new ApplicationDbContext())
             {
                 bestellingenInfo = context.Bestellingens.ToList();
             }
             return bestellingenInfo;
         }
         [HttpGet("{id}")]
-        public IEnumerable<Models.Bestellingen.Bestellingen> bestellingenListById(int? id)
+        public IEnumerable<Bestellingen> bestellingenListById(int? id)
         {
-            using(var context = new BestellingenDbContext())
+            using(var context = new ApplicationDbContext())
             {
-                IQueryable<Models.Bestellingen.Bestellingen> bestellingenInfo = context.Bestellingens;
+                IQueryable<Bestellingen> bestellingenInfo = context.Bestellingens;
                 if (id.HasValue)
                 {
                     bestellingenInfo = bestellingenInfo.Where(e => e.Id == id);
@@ -41,10 +41,10 @@ namespace stageOpdrachtMVC.Controllers
             { 
                 var totalePrijs = 0.0;
 
-                using (var context = new BestellingenDbContext())
+                using (var context = new ApplicationDbContext())
                 {
                    
-                    var boekenInfo = new List<Models.Domain.Boeken>();
+                    var boekenInfo = new List<Boeken>();
                     using (var contextRead = new ApplicationDbContext())
                     {
                     string[] productenIds = addBestellingenRequest.Producten.Split("/");
@@ -65,7 +65,7 @@ namespace stageOpdrachtMVC.Controllers
 
                     DateTime currentDateTime = DateTime.Now;
                     string dateTimeString = currentDateTime.ToString("dd/MM/yyyy HH:mm");
-                    var bestellingen = new Models.Bestellingen.Bestellingen()
+                    var bestellingen = new Bestellingen()
                     {
                         Id = 0,
                         Name = addBestellingenRequest.Name,

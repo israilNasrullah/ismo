@@ -10,7 +10,7 @@ using stageOpdrachtMVC.Models;
 
 namespace stageOpdrachtMVC.Migrations
 {
-    [DbContext(typeof(AccountDbContext))]
+    [DbContext(typeof(ApplicationDbContext))]
     [Migration("20231025074352_mig1")]
     partial class mig1
     {

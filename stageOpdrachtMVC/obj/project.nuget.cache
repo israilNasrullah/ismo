@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "Q8BKR5/gr3e1VNNWuupf1iNjZ1LkGJq9BjsV8X1VdClD0aHYUHGFltrAcC3YqcKfk+eLb6Bcnn7Oti0cPrwaUA==",
+  "dgSpecHash": "a9EBCTDpiZN8o9oAYvWpvf4TWR8RgIs4w2ugXgHBk9jZ65dyFaUucZ6I7/BGos+e1e8P9UV2yY22rM13KsIq+A==",
   "success": true,
   "projectFilePath": "C:\\Users\\demo\\source\\repos\\StageOpdrachtMVC\\stageOpdrachtMVC\\stageOpdrachtMVC.csproj",
   "expectedPackageFiles": [
@@ -60,6 +60,7 @@
     "C:\\Users\\demo\\.nuget\\packages\\messagepack\\2.1.152\\messagepack.2.1.152.nupkg.sha512",
     "C:\\Users\\demo\\.nuget\\packages\\messagepack.annotations\\2.1.152\\messagepack.annotations.2.1.152.nupkg.sha512",
     "C:\\Users\\demo\\.nuget\\packages\\messagepackanalyzer\\2.1.152\\messagepackanalyzer.2.1.152.nupkg.sha512",
+    "C:\\Users\\demo\\.nuget\\packages\\microsoft.aspnetcore.authentication.jwtbearer\\6.0.24\\microsoft.aspnetcore.authentication.jwtbearer.6.0.24.nupkg.sha512",
     "C:\\Users\\demo\\.nuget\\packages\\microsoft.aspnetcore.razor.language\\6.0.0\\microsoft.aspnetcore.razor.language.6.0.0.nupkg.sha512",
     "C:\\Users\\demo\\.nuget\\packages\\microsoft.bcl.asyncinterfaces\\5.0.0\\microsoft.bcl.asyncinterfaces.5.0.0.nupkg.sha512",
     "C:\\Users\\demo\\.nuget\\packages\\microsoft.build\\17.3.2\\microsoft.build.17.3.2.nupkg.sha512",

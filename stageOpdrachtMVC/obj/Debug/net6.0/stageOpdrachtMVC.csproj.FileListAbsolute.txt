@@ -267,3 +267,4 @@ C:\Users\demo\source\repos\StageOpdrachtMVC\stageOpdrachtMVC\bin\Debug\net6.0\ru
 C:\Users\demo\source\repos\StageOpdrachtMVC\stageOpdrachtMVC\bin\Debug\net6.0\runtimes\browser\lib\net6.0\System.Text.Encodings.Web.dll
 C:\Users\demo\source\repos\StageOpdrachtMVC\stageOpdrachtMVC\bin\Debug\net6.0\FluentAssertions.dll
 C:\Users\demo\source\repos\StageOpdrachtMVC\stageOpdrachtMVC\obj\Debug\net6.0\stageOpdrachtMVC.csproj.AssemblyReference.cache
+C:\Users\demo\source\repos\StageOpdrachtMVC\stageOpdrachtMVC\bin\Debug\net6.0\Microsoft.AspNetCore.Authentication.JwtBearer.dll

@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using stageOpdrachtMVC.Models;
 using Microsoft.EntityFrameworkCore;
-using stageOpdrachtMVC.Models.Domain;
+
 using stageOpdrachtMVC.Models.BestellingenDb;
 using System.Net.Http.Json;
 using Microsoft.AspNetCore.Authorization;
@@ -12,33 +12,35 @@ namespace stageOpdrachtMVC.Controllers
     public class BoekenController : Controller
     {
         private readonly ApplicationDbContext applicationDbContext;
-        private readonly BestellingenDbContext bestellingenDbContext;
+        
         
         public BoekenController()
         {
             this.applicationDbContext = new ApplicationDbContext();
-            this.bestellingenDbContext = new BestellingenDbContext();
+            
         }
 
         private string _apiUrl = "https://localhost:7118/api/Boeken";
-        private List<Models.Domain.Boeken> GetFromAPI()
+        private List<Boeken> GetFromAPI()
         {
             HttpClient client = new HttpClient();
             HttpResponseMessage response = client.GetAsync("https://localhost:7118/api/Boeken/").GetAwaiter().GetResult();
             if (response.IsSuccessStatusCode)
             {
-                return response.Content.ReadFromJsonAsync<List<Models.Domain.Boeken>>().GetAwaiter().GetResult();
+                return response.Content.ReadFromJsonAsync<List<Boeken>>().GetAwaiter().GetResult();
             }
             return null;
         }
 
 
         [HttpGet]
+        [Authorize]
         public IActionResult Index()
         {
-            if (HttpContext.Session.GetString("Ingelogd") == "true")
-            {
-                // var   boekenList = applicationDbContext.Boeken.ToList();
+            //if (HttpContext.Session.GetString("Ingelogd") == "true")
+            //{
+
+                // var   boekenList = applicationDbContext.Boekens.ToList();
             var boekenList = GetFromAPI();
             var bestellingenModel = new AddBestellingenModel(); // Creëer een nieuw exemplaar van AddBestellingenModel.
 
@@ -49,19 +51,19 @@ namespace stageOpdrachtMVC.Controllers
             };
 
             return View(viewModel);
-            }
+            /*}
             else
-            {
+           {
                 
                 return RedirectToAction("Index", "Home");
-            }
+            }*/
         }
 
         [HttpPost]
         public async Task<IActionResult> Index(AddBestellingenModel addBestellingenRequest)
         {
             
-            var bestellingen = new Models.Bestellingen.Bestellingen()
+            var bestellingen = new Bestellingen()
             {
                 Id = 0,
                 Name = addBestellingenRequest.Name,
@@ -73,9 +75,9 @@ namespace stageOpdrachtMVC.Controllers
                 Verwerkt = addBestellingenRequest.Verwerkt
             };
 
-           
-            bestellingenDbContext.Bestellingens.Add(bestellingen);
-            await bestellingenDbContext.SaveChangesAsync();
+
+            applicationDbContext.Bestellingens.Add(bestellingen);
+            await applicationDbContext.SaveChangesAsync();
 
             
             string[] productIds = addBestellingenRequest.Producten.Split('/');
@@ -126,7 +128,7 @@ namespace stageOpdrachtMVC.Controllers
         {
             if (HttpContext.Session.GetString("Admin") == "true")
             {
-                var Boeken = new Models.Domain.Boeken()
+                var Boeken = new Boeken()
                 {
                     id = 0,
                     title = addBoekenRequest.title,
@@ -137,7 +139,7 @@ namespace stageOpdrachtMVC.Controllers
                 };
 
                 HttpClient client = new HttpClient();
-                HttpResponseMessage response = client.PostAsJsonAsync<Models.Domain.Boeken>(_apiUrl, Boeken).GetAwaiter().GetResult();
+                HttpResponseMessage response = client.PostAsJsonAsync<Boeken>(_apiUrl, Boeken).GetAwaiter().GetResult();
 
                 // AddByAPI(Boeken);
                 //  applicationDbContext.Boeken.Add(Boeken);
@@ -201,7 +203,7 @@ namespace stageOpdrachtMVC.Controllers
             HttpClient client = new HttpClient();
             string apiURL = $"https://localhost:7118/api/Boeken/{model.id}";
 
-            var boek = new Models.Domain.Boeken
+            var boek = new Boeken
             {
                 id = model.id,
                 title = model.title,

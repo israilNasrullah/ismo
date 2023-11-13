@@ -1,4 +1,4 @@
-﻿namespace stageOpdrachtMVC.Models.Bestellingen
+﻿namespace stageOpdrachtMVC.Models
 {
     public class Bestellingen
     {

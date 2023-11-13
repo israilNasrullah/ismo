@@ -8,6 +8,8 @@ using System.Security.Claims;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
 
 namespace stageOpdrachtMVC.Controllers
 {
@@ -35,11 +37,11 @@ namespace stageOpdrachtMVC.Controllers
         }
 
         private readonly ILogger<HomeController> _logger;
-        private readonly AccountDbContext accountDbContext;
+        private readonly ApplicationDbContext applicationDbContext;
         public HomeController(ILogger<HomeController> logger)
         {
             _logger = logger; // Injecteer de logger via de constructor
-            this.accountDbContext = new AccountDbContext();
+            this.applicationDbContext = new ApplicationDbContext();
         }
 
         [HttpGet]
@@ -61,8 +63,8 @@ namespace stageOpdrachtMVC.Controllers
 
             };
 
-            accountDbContext.Accounts.Add(accounts);
-            await accountDbContext.SaveChangesAsync();
+            applicationDbContext.Accounts.Add(accounts);
+            await applicationDbContext.SaveChangesAsync();
 
             return RedirectToAction("Index");
         }
@@ -78,34 +80,38 @@ namespace stageOpdrachtMVC.Controllers
         {
             
                 var hashedPassword = ComputeSha256Hash(loginModel.Password);
-                var user = accountDbContext.Accounts.FirstOrDefault(u => u.Username == loginModel.Username && u.Password == hashedPassword);
-                
+                var user = applicationDbContext.Accounts.FirstOrDefault(u => u.Username == loginModel.Username && u.Password == hashedPassword);
 
-                if (user != null)
-                {
-                    // Markeer de gebruiker als ingelogd in de sessie
-                    HttpContext.Session.SetString("Ingelogd", "true");
 
-                if (user.Admin)
-                {
-                    HttpContext.Session.SetString("Admin", "true");
-                    
-                }
-                else
-                {
-                    HttpContext.Session.SetString("Admin", "false");
-                    
-                }
+            if (user != null)
+            {
+                string token = GenerateJwtToken(user);
+                return Ok(new { Token = token });
+            }
 
-                    return RedirectToAction("Index", "Boeken");
-                }
+         return Unauthorized();
+              
+        }
+        private string GenerateJwtToken(Account user)
+        {
+            var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("Ik%Hoop%Dat%Deze%Code%Niet%Wordt%Gehacked"));
+            var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
 
-                // Als inloggegevens onjuist zijn, toon een foutmelding
-                ViewBag.Foutmelding = "Ongeldige inloggegevens.";
-            
-                return View();
-            
-            
+            var claims = new List<Claim>
+    {
+        new Claim(ClaimTypes.Name, user.Username)
+      //  new Claim("IsAdmin", user.Admin.ToString()) // Convert bool to string
+    };
+
+            var token = new JwtSecurityToken(
+                issuer: "https://localhost:7118/",
+                audience: "https://localhost:7118/",
+                claims: claims,
+                expires: DateTime.UtcNow.AddHours(1), // Set expiration time
+                signingCredentials: credentials
+            );
+
+            return new JwtSecurityTokenHandler().WriteToken(token);
         }
 
 

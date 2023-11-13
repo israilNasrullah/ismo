@@ -1,4 +1,4 @@
-﻿namespace stageOpdrachtMVC.Models.Domain
+﻿namespace stageOpdrachtMVC.Models
 {
     public class Boeken
     {

@@ -1,21 +1,21 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using stageOpdrachtMVC.Models.Domain;
 using stageOpdrachtMVC.Models;
 using System.Collections.Generic;
 
 
 namespace stageOpdrachtMVC.Controllers
 {
-
+    /*
     [Route("api/Boeken")]
     [ApiController]
     public class ValuesController : ControllerBase
     {
+        
         [HttpGet]
-        public IEnumerable<Models.Domain.Boeken> BoekenList()
+        public IEnumerable<Boeken> BoekenList()
         {
-            var boekenInfo = new List<Models.Domain.Boeken>();
+            var boekenInfo = new List<Boeken>();
             using (var context = new ApplicationDbContext())
             {
                 boekenInfo = context.Boekens.ToList();
@@ -23,11 +23,11 @@ namespace stageOpdrachtMVC.Controllers
             return boekenInfo;
         }
         [HttpGet("{id}")]
-        public IEnumerable<Models.Domain.Boeken> BoekenListById(int? id)
+        public IEnumerable<Boeken> BoekenListById(int? id)
         {
             using (var context = new ApplicationDbContext())
             {
-                IQueryable<Models.Domain.Boeken> boekenInfo = context.Boekens;
+                IQueryable<Boeken> boekenInfo = context.Boekens;
 
                 if (id.HasValue)
                 {
@@ -63,7 +63,7 @@ namespace stageOpdrachtMVC.Controllers
             {
                 using (var context = new ApplicationDbContext())
                 {
-                    var Boeken = new Models.Domain.Boeken()
+                    var Boeken = new Boeken()
                     {
                         id = 0,
                         title = addBoekenRequest.title,
@@ -107,7 +107,9 @@ namespace stageOpdrachtMVC.Controllers
                 return false;
             }
         }
+        
     }
+    */
 
     }
     
