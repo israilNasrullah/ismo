@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
+using stageOpdrachtMVC.Repositories;
 
 namespace stageOpdrachtMVC.Controllers
 {
@@ -38,12 +39,14 @@ namespace stageOpdrachtMVC.Controllers
 
         private readonly ILogger<HomeController> _logger;
         private readonly ApplicationDbContext applicationDbContext;
-        public HomeController(ILogger<HomeController> logger)
+        private readonly IRepository<Account> _accountRepository;
+        public HomeController(ILogger<HomeController> logger, IRepository<Account> accountRepository)
         {
-            _logger = logger; // Injecteer de logger via de constructor
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             this.applicationDbContext = new ApplicationDbContext();
+            _accountRepository = accountRepository;
         }
-
+     
         [HttpGet]
         public IActionResult NewAccount()
         {
@@ -63,8 +66,8 @@ namespace stageOpdrachtMVC.Controllers
 
             };
 
-            applicationDbContext.Accounts.Add(accounts);
-            await applicationDbContext.SaveChangesAsync();
+            _accountRepository.Add(accounts);
+            await _accountRepository.SaveChangesAsync();
 
             return RedirectToAction("Index");
         }
@@ -72,57 +75,97 @@ namespace stageOpdrachtMVC.Controllers
         [HttpGet]
         public IActionResult Index()
         {
-            return View();
+            //  var (success, username, role) = SecurityCheck(); 
+            // var username = HttpContext.User.Identity.Name;
+            //ViewBag.Username = username;
+            // ViewBag.Status = !string.IsNullOrEmpty(username);
+
+                    ViewBag.Status = false;
+            var model = new InlogAccountModel() { returnUrl = Request.Query["returnUrl"] };
+            return View(model);
         }
 
         [HttpPost]
         public async Task<IActionResult> Index(InlogAccountModel loginModel)
         {
-            
-                var hashedPassword = ComputeSha256Hash(loginModel.Password);
-                var user = applicationDbContext.Accounts.FirstOrDefault(u => u.Username == loginModel.Username && u.Password == hashedPassword);
-
-
+            var returnUrl = loginModel.returnUrl;
+            var hashedPassword = ComputeSha256Hash(loginModel.Password);
+            var user = applicationDbContext.Accounts.FirstOrDefault(u => u.Username == loginModel.Username && u.Password == hashedPassword);
+            var role = "";
             if (user != null)
             {
-                string token = GenerateJwtToken(user);
-                return Ok(new { Token = token });
-            }
+                try
+                {
+                    if (user.Admin == true)
+                    {
+                        role = "admin";
+                    }
+                    else
+                    {
+                        role = "user";
+                    }
+                }
+                catch (Exception ex)
+                {
+                    ViewBag.Foutmelding = "Er is iets fout gegaan bij het ophalen van de rol!";
+                    return RedirectToAction("Index");
+                }
 
-         return Unauthorized();
-              
+                string token = GenerateJwtToken(loginModel.Username, role);
+                _logger.LogInformation($"Received Token: {token}");
+
+                Response.Cookies.Append("token", token);
+
+                _logger.LogInformation("User logged in successfully.");
+
+                //       return RedirectToAction(returnUrl);
+                return Redirect(returnUrl);
+           }
+           
+           _logger.LogInformation("Gegevens kloppen niet!!");
+            ViewBag.Foutmelding = "De gegevens kloppen niet!";
+            RedirectToAction("Index");
+
+            return View();
+            
         }
-        private string GenerateJwtToken(Account user)
+
+
+
+        private string GenerateJwtToken(string username, string role)
         {
-            var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("Ik%Hoop%Dat%Deze%Code%Niet%Wordt%Gehacked"));
+            var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("mijnkey123456789012345678901234567890"));
             var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
 
-            var claims = new List<Claim>
-    {
-        new Claim(ClaimTypes.Name, user.Username)
-      //  new Claim("IsAdmin", user.Admin.ToString()) // Convert bool to string
+            var claims = new[]
+            {
+        new Claim(ClaimTypes.Name, username),
+        new Claim("Role", role)
+
     };
 
             var token = new JwtSecurityToken(
-                issuer: "https://localhost:7118/",
-                audience: "https://localhost:7118/",
+                issuer: "https://localhost:7139/",
+                audience: "https://localhost:7139/",
                 claims: claims,
-                expires: DateTime.UtcNow.AddHours(1), // Set expiration time
+                expires: DateTime.UtcNow.AddHours(1),
                 signingCredentials: credentials
             );
 
-            return new JwtSecurityTokenHandler().WriteToken(token);
+            var tokenHandler = new JwtSecurityTokenHandler();
+            return tokenHandler.WriteToken(token);
         }
+
+
 
 
         [HttpGet]
         public async Task<IActionResult> Logout()
         {
             // Markeer de gebruiker als uitgelogd in de sessie
-            HttpContext.Session.SetString("Ingelogd", "false");
-            HttpContext.Session.SetString("Admin", "false");
-
-            return RedirectToAction("Index");
+            HttpContext.Session.Remove("role");
+            Response.Cookies.Delete("token");
+            return RedirectToAction("Index", "Boeken");
         }
 
 

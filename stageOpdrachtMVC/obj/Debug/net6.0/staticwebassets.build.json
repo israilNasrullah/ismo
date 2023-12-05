@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "txUjOEFSNOyd8LXjU9y4M7BT+KQOUj5NpZcio5IbnuE=",
+  "Hash": "Rmcw6y75mPm8kbrq6fryJjN5tC7gXZnSiD1m9LGHK+o=",
   "Source": "stageOpdrachtMVC",
   "BasePath": "_content/stageOpdrachtMVC",
   "Mode": "Default",
@@ -68,6 +68,23 @@
       "OriginalItemSpec": "wwwroot\\css\\site.css"
     },
     {
+      "Identity": "C:\\Users\\demo\\source\\repos\\StageOpdrachtMVC\\stageOpdrachtMVC\\wwwroot\\css\\style.css",
+      "SourceId": "stageOpdrachtMVC",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\demo\\source\\repos\\StageOpdrachtMVC\\stageOpdrachtMVC\\wwwroot\\",
+      "BasePath": "_content/stageOpdrachtMVC",
+      "RelativePath": "css/style.css",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\css\\style.css"
+    },
+    {
       "Identity": "C:\\Users\\demo\\source\\repos\\StageOpdrachtMVC\\stageOpdrachtMVC\\wwwroot\\favicon.ico",
       "SourceId": "stageOpdrachtMVC",
       "SourceType": "Discovered",
@@ -83,6 +100,40 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot\\favicon.ico"
+    },
+    {
+      "Identity": "C:\\Users\\demo\\source\\repos\\StageOpdrachtMVC\\stageOpdrachtMVC\\wwwroot\\images\\bg.jpg",
+      "SourceId": "stageOpdrachtMVC",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\demo\\source\\repos\\StageOpdrachtMVC\\stageOpdrachtMVC\\wwwroot\\",
+      "BasePath": "_content/stageOpdrachtMVC",
+      "RelativePath": "images/bg.jpg",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\images\\bg.jpg"
+    },
+    {
+      "Identity": "C:\\Users\\demo\\source\\repos\\StageOpdrachtMVC\\stageOpdrachtMVC\\wwwroot\\images\\logo.png",
+      "SourceId": "stageOpdrachtMVC",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\demo\\source\\repos\\StageOpdrachtMVC\\stageOpdrachtMVC\\wwwroot\\",
+      "BasePath": "_content/stageOpdrachtMVC",
+      "RelativePath": "images/logo.png",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\images\\logo.png"
     },
     {
       "Identity": "C:\\Users\\demo\\source\\repos\\StageOpdrachtMVC\\stageOpdrachtMVC\\wwwroot\\js\\site.js",

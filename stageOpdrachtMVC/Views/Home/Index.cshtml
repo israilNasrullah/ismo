@@ -2,8 +2,7 @@
 @{
     // Check if the ViewBag has the "Foutmelding" value
     var foutmelding = ViewBag.Foutmelding as string;
-    
-
+    var name = ViewBag.Username as string;
 
 }
 
@@ -12,77 +11,48 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <title>Inloggen</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
-            text-align: center;
-        }
-
-        .container {
-            width: 300px;
-            margin: 0 auto;
-            padding: 20px;
-            background-color: #fff;
-            border-radius: 5px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-
-        }
-    
-        h2 {
-            margin-top: 0;
-        }
-
-        input[type="text"],
-        input[type="password"] {
-            width: 100%;
-            padding: 10px;
-            margin: 10px 0;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-        }
-
-        input[type="submit"] {
-            width: 100%;
-            padding: 10px;
-            background-color: #007bff;
-            color: #fff;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-
-        input[type="submit"]:hover {
-            background-color: #0056b3;
-        }
-    </style>
 </head>
-<body>
-  
-    <div class="container">
-        <h2>Inloggen</h2>
-       <form method="post" asp-action="Index" asp-controller="Home">
-    <input type="text" placeholder="Gebruikersnaam" name="Username" asp-for="Username" required>
-    <input type="password" placeholder="Wachtwoord" name="Password" asp-for="Password" required>
-    <input type="submit" value="Inloggen">
-</form>
+<body class="bg-gray-100 font-sans">
+   @*Controlleert of je al bent ingelogd*@
+    @if(ViewBag.Status == true)
+    {
+        <h1 class="text-3xl text-center">@name, Welkom bij onze boekenwinkel!</h1>
+    }
+    else
+    {
+        <div class="container mx-auto mt-16">
+        <div class="max-w-md mx-auto bg-white rounded p-8 shadow-md">
+            <h2 class="text-2xl font-bold mb-8">Inloggen</h2>
 
-        @Html.ActionLink("Maak een nieuwe account!", "NewAccount")
+            <form method="post" asp-action="Index" asp-controller="Home">
+                @Html.HiddenFor( Model => Model.returnUrl)
+                <input type="text" placeholder="Gebruikersnaam" name="Username" asp-for="Username"
+                       class="w-full px-4 py-2 mb-4 border rounded-md">
 
-     @if (!string.IsNullOrEmpty(foutmelding))
-{
-    <div class="alert alert-danger">
-        @foutmelding
+                <input type="password" placeholder="Wachtwoord" name="Password" asp-for="Password"
+                       class="w-full px-4 py-2 mb-4 border rounded-md">
 
+                <button type="submit" class="w-full bg-blue-500 text-white p-2 rounded-md hover:bg-blue-700">
+                    Inloggen
+                </button>
+            </form>
+
+            <p class="mt-4">
+                @Html.ActionLink("Maak een nieuwe account!", "NewAccount",  new { @class = "text-blue-500" })
+            </p>
+
+            @if (!string.IsNullOrEmpty(ViewBag.Foutmelding))
+            {
+                <div class="mt-4 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative text-center">
+                    @ViewBag.Foutmelding
+                </div>
+            }
+        </div>
     </div>
+    }
     
-    
-}
-       
-    </div>
-    
-    
+
 </body>
 </html>
-

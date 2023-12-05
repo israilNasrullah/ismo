@@ -4,6 +4,7 @@
 
 
 
+<head>
 
 <style>
     .bestelForm{
@@ -19,14 +20,18 @@
     transition: transform 1s ease, opacity 1s ease; /* Transition properties */
     }
 </style>
+</head>
+
 <div class="boekenContainer">
 <h1>
     Boeken
 </h1>
-@if(_httpContext.HttpContext.Session.GetString("Admin") == "true")
-    {
-        @Html.ActionLink("Nieuw boek", "Add")
-    }
+@if(_httpContext.HttpContext.Session.GetString("role") == "admin")
+                    {
+                        @Html.ActionLink("Nieuw boek", "Add")
+                    }
+        
+    
     
 <table class="table">
     <thead>
@@ -37,10 +42,12 @@
             <th>Prijs</th>
             <th>Publicatie jaar</th>
             <th>Voorraad</th>
-                @if(_httpContext.HttpContext.Session.GetString("Admin") == "true")
-                {
-                    <th>Actions</th>
-                }
+               @if(_httpContext.HttpContext.Session.GetString("role") == "admin")
+                    {
+                        <th>Actions</th>
+                    }
+                    
+                
             <th>Voeg toe</th>
         </tr>
     </thead>
@@ -55,10 +62,13 @@
             <td>@boeken.prijs</td>
             <td>@boeken.publicatieJaar</td>
             <td>@boeken.voorraad</td>
-            @if(_httpContext.HttpContext.Session.GetString("Admin") == "true")
+          
+                    @if(_httpContext.HttpContext.Session.GetString("role") == "admin")
                     {
                         <td><a href="Boeken/Edit/@boeken.id">Zie meer</a></td>
                     }
+                    
+                    
                     
             <td><button data-title="@boeken.title" data-prijs="@boeken.prijs" value="@boeken.id" class="boekenId">+</button></td>
             </tr>

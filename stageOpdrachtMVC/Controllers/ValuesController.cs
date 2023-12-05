@@ -6,12 +6,12 @@ using System.Collections.Generic;
 
 namespace stageOpdrachtMVC.Controllers
 {
-    /*
+
     [Route("api/Boeken")]
     [ApiController]
     public class ValuesController : ControllerBase
     {
-        
+
         [HttpGet]
         public IEnumerable<Boeken> BoekenList()
         {
@@ -84,7 +84,7 @@ namespace stageOpdrachtMVC.Controllers
         }
 
         [HttpPut("{id}")]
-        public bool BoekenUpdate(int? id , EditBoekenModel model)
+        public bool BoekenUpdate(int? id, EditBoekenModel model)
         {
             try
             {
@@ -107,9 +107,9 @@ namespace stageOpdrachtMVC.Controllers
                 return false;
             }
         }
-        
-    }
-    */
 
     }
-    
+
+
+}
+

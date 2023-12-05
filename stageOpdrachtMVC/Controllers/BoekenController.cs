@@ -6,21 +6,40 @@ using Microsoft.EntityFrameworkCore;
 using stageOpdrachtMVC.Models.BestellingenDb;
 using System.Net.Http.Json;
 using Microsoft.AspNetCore.Authorization;
+using System.Net.Http.Headers;
+using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
+using System.Text;
+using System.Security.Claims;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using stageOpdrachtMVC.Repositories;
+using stageOpdrachtMVC.Filters;
 
 namespace stageOpdrachtMVC.Controllers
 {
+   //[UserAuthorizationFilter]
+    [AuthorizationFilter("admin;user")]
     public class BoekenController : Controller
     {
-        private readonly ApplicationDbContext applicationDbContext;
-        
-        
-        public BoekenController()
+        private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly ILogger<BoekenController> _logger;
+        private readonly IRepository<Boeken> _boekenRepository;
+        private readonly IRepository<Bestellingen> _bestellingenRepository;
+       
+
+        public BoekenController(ILogger<BoekenController> logger, IRepository<Boeken> boekenRepository, IRepository<Bestellingen> bestellingenRepository)
         {
-            this.applicationDbContext = new ApplicationDbContext();
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            _boekenRepository = boekenRepository;
+            _bestellingenRepository = bestellingenRepository;
             
+
         }
 
+
         private string _apiUrl = "https://localhost:7118/api/Boeken";
+
+
         private List<Boeken> GetFromAPI()
         {
             HttpClient client = new HttpClient();
@@ -31,38 +50,31 @@ namespace stageOpdrachtMVC.Controllers
             }
             return null;
         }
-
-
+        
         [HttpGet]
-        [Authorize]
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            //if (HttpContext.Session.GetString("Ingelogd") == "true")
-            //{
+            var boekenList = _boekenRepository.GetAll();
+                var bestellingenModel = new AddBestellingenModel();
 
-                // var   boekenList = applicationDbContext.Boekens.ToList();
-            var boekenList = GetFromAPI();
-            var bestellingenModel = new AddBestellingenModel(); // Creëer een nieuw exemplaar van AddBestellingenModel.
+                var viewModel = new CombinedViewModel
+                {
+                    BoekenList = boekenList.ToList(),
+                    BestellingenModel = bestellingenModel
+                };
+            
 
-            var viewModel = new CombinedViewModel
-            {
-                BoekenList = boekenList,
-                BestellingenModel = bestellingenModel
-            };
-
-            return View(viewModel);
-            /*}
-            else
-           {
-                
-                return RedirectToAction("Index", "Home");
-            }*/
+                return View(viewModel);
         }
+
+
+
+
 
         [HttpPost]
         public async Task<IActionResult> Index(AddBestellingenModel addBestellingenRequest)
         {
-            
+           // HttpContext.User.HasClaim
             var bestellingen = new Bestellingen()
             {
                 Id = 0,
@@ -75,159 +87,142 @@ namespace stageOpdrachtMVC.Controllers
                 Verwerkt = addBestellingenRequest.Verwerkt
             };
 
+            _bestellingenRepository.Add(bestellingen);
+            await _bestellingenRepository.SaveChangesAsync();
 
-            applicationDbContext.Bestellingens.Add(bestellingen);
-            await applicationDbContext.SaveChangesAsync();
-
-            
             string[] productIds = addBestellingenRequest.Producten.Split('/');
 
-           
             foreach (var productId in productIds)
             {
                 if (int.TryParse(productId, out int bookId))
                 {
-                    var book = await applicationDbContext.Boekens.FindAsync(bookId);
-                    book.voorraad--;  
+                    var book = await _boekenRepository.GetByIdAsync(bookId);
+                    if (book != null)
+                    {
+                        book.voorraad--;
+                        _boekenRepository.Update(book);
+                    }
                 }
             }
 
-      
-            await applicationDbContext.SaveChangesAsync();
+            await _boekenRepository.SaveChangesAsync();
 
             return RedirectToAction("Index");
         }
 
-  /*      private Models.Domain.Boeken AddByAPI(Models.Domain.Boeken boek)
-        {
-            HttpClient client = new HttpClient();
-            HttpResponseMessage response = client.PostAsJsonAsync<Models.Domain.Boeken>(_apiUrl, boek).GetAwaiter().GetResult();
-            if (response.IsSuccessStatusCode)
-            {
-                return response.Content.ReadFromJsonAsync<Models.Domain.Boeken>().GetAwaiter().GetResult();
-            }
-            return null;
-        }  */
+        /*      private Models.Domain.Boeken AddByAPI(Models.Domain.Boeken boek)
+              {
+                  HttpClient client = new HttpClient();
+                  HttpResponseMessage response = client.PostAsJsonAsync<Models.Domain.Boeken>(_apiUrl, boek).GetAwaiter().GetResult();
+                  if (response.IsSuccessStatusCode)
+                  {
+                      return response.Content.ReadFromJsonAsync<Models.Domain.Boeken>().GetAwaiter().GetResult();
+                  }
+                  return null;
+              }  */
 
+        [AuthorizationFilter("admin")]
         [HttpGet]
         public IActionResult Add()
         {
-            if (HttpContext.Session.GetString("Admin") == "true")
-            {
-                return View();
-            }
-            else
-            {
-
-                return RedirectToAction("Index");
-            }
+           
+            return View();
         }
-
+        [AuthorizationFilter("admin")]
         [HttpPost]
         public async Task<IActionResult> Add(AddBoekenModel addBoekenRequest)
         {
-            if (HttpContext.Session.GetString("Admin") == "true")
+
+            var Boeken = new Boeken()
             {
-                var Boeken = new Boeken()
-                {
-                    id = 0,
-                    title = addBoekenRequest.title,
-                    auteur = addBoekenRequest.auteur,
-                    prijs = addBoekenRequest.prijs,
-                    publicatieJaar = addBoekenRequest.publicatieJaar,
-                    voorraad = addBoekenRequest.voorraad
-                };
+                id = 0,
+                title = addBoekenRequest.title,
+                auteur = addBoekenRequest.auteur,
+                prijs = addBoekenRequest.prijs,
+                publicatieJaar = addBoekenRequest.publicatieJaar,
+                voorraad = addBoekenRequest.voorraad
+            };
 
-                HttpClient client = new HttpClient();
-                HttpResponseMessage response = client.PostAsJsonAsync<Boeken>(_apiUrl, Boeken).GetAwaiter().GetResult();
-
-                // AddByAPI(Boeken);
-                //  applicationDbContext.Boeken.Add(Boeken);
-                // await applicationDbContext.SaveChangesAsync();
-
-                return RedirectToAction("Index");
-            }
-            else
-            {
-
-                return RedirectToAction("Index");
-            }
-            }
+            //HttpClient client = new HttpClient();
+            //HttpResponseMessage response = client.PostAsJsonAsync<Boeken>(_apiUrl, Boeken).GetAwaiter().GetResult();
 
 
+            _boekenRepository.Add(Boeken);
+            await _boekenRepository.SaveChangesAsync();
 
+            return RedirectToAction("Index");
+
+
+        }
+
+
+        [AuthorizationFilter("admin")]
         [HttpGet]
         public IActionResult Delete()
         {
             return View();
         }
-
+        [AuthorizationFilter("admin")]
         [HttpGet]
         public async Task<IActionResult> Edit(int id)
         {
-            if (HttpContext.Session.GetString("Admin") == "true")
-            {
-                var boek = applicationDbContext.Boekens.FirstOrDefault(x => x.id == id);
 
-            if(boek != null)
+            var boek = await _boekenRepository.GetByIdAsync(id);
+
+            if (boek != null)
             {
-              var editModel = new EditBoekenModel()
-            {
-                id = boek.id,
-                title = boek.title,
-                auteur = boek.auteur,
-                prijs = boek.prijs,
-                publicatieJaar = boek.publicatieJaar,
-                voorraad = boek.voorraad
-            };
-                return await Task.Run(() => View("Edit", editModel));
+                var editModel = new EditBoekenModel()
+                {
+                    id = boek.id,
+                    title = boek.title,
+                    auteur = boek.auteur,
+                    prijs = boek.prijs,
+                    publicatieJaar = boek.publicatieJaar,
+                    voorraad = boek.voorraad
+                };
+                return View("Edit", editModel);
             }
 
             return RedirectToAction("Index");
-            }
-            else
-            {
 
-                return RedirectToAction("Index");
-            }
+
         }
 
 
-        
 
-        [HttpPost]      
+        [AuthorizationFilter("admin")]
+        [HttpPost]
         public async Task<IActionResult> Edit(EditBoekenModel model)
         {
-            
-            //var boek = await applicationDbContext.Boeken.FindAsync(model.id); 
-            HttpClient client = new HttpClient();
-            string apiURL = $"https://localhost:7118/api/Boeken/{model.id}";
+            //HttpClient client = new HttpClient();
+            //string apiURL = $"https://localhost:7118/api/Boeken/{model.id}";
 
-            var boek = new Boeken
+            //var boek = new Boeken
+            //{
+            //    id = model.id,
+            //    title = model.title,
+            //    auteur = model.auteur,
+            //    prijs = model.prijs,
+            //    publicatieJaar = model.publicatieJaar,
+            //    voorraad = model.voorraad
+            //};
+
+            //  HttpResponseMessage response = await client.PutAsJsonAsync(apiURL, boek);
+
+            var boek = await _boekenRepository.GetByIdAsync(model.id);
+
+            if (boek != null)
             {
-                id = model.id,
-                title = model.title,
-                auteur = model.auteur,
-                prijs = model.prijs,
-                publicatieJaar = model.publicatieJaar,
-                voorraad = model.voorraad
-            };
-
-            HttpResponseMessage response = await client.PutAsJsonAsync(apiURL, boek);
-
-
-         /*   if (boek != null)
-            {
-                boek.title = model.title;   
-                boek.auteur = model.auteur; 
+                boek.title = model.title;
+                boek.auteur = model.auteur;
                 boek.prijs = model.prijs;
                 boek.publicatieJaar = model.publicatieJaar;
                 boek.voorraad = model.voorraad;
 
-                await applicationDbContext.SaveChangesAsync();
+                await _boekenRepository.SaveChangesAsync();
 
                 return RedirectToAction("Index");
-            } */
+            }
             return RedirectToAction("Index");
         }
 
@@ -236,21 +231,21 @@ namespace stageOpdrachtMVC.Controllers
             HttpClient client = new HttpClient();
             string apiURL = $"https://localhost:7118/api/Boeken/{model.id}";
             HttpResponseMessage response = client.DeleteAsync(apiURL).GetAwaiter().GetResult();
-            
-        }
 
+        }
+        [AuthorizationFilter("admin")]
         [HttpPost]
         public async Task<IActionResult> Delete(EditBoekenModel model)
         {
-           /* var boek = await applicationDbContext.Boeken.FindAsync(model.id);
-            if(boek != null)
+            var boek = await _boekenRepository.GetByIdAsync(model.id);
+            if (boek != null)
             {
-                applicationDbContext.Boeken.Remove(boek);
-                await applicationDbContext.SaveChangesAsync();
+                _boekenRepository.Remove(boek);
+                await _boekenRepository.SaveChangesAsync();
 
                 return RedirectToAction("Index");
-            } */
-           DeleteByAPI(model);
+            }
+            //DeleteByAPI(model);
 
             return RedirectToAction("Index");
         }

@@ -6,77 +6,37 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Registratie</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
-            text-align: center;
-        }
-
-        .container {
-            width: 300px;
-            margin: 0 auto;
-            padding: 20px;
-            background-color: #fff;
-            border-radius: 5px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        }
-
-        h2 {
-            margin-top: 0;
-        }
-
-        input[type="text"],
-        input[type="email"],
-        input[type="password"] {
-            width: 100%;
-            padding: 10px;
-            margin: 10px 0;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-        }
-
-        input[type="submit"] {
-            width: 100%;
-            padding: 10px;
-            background-color: #007bff;
-            color: #fff;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-
-        input[type="submit"]:hover {
-            background-color: #0056b3;
-        }
-    </style>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
 </head>
-<body>
-    <div class="container">
-        <h2>Registratie</h2>
-        <form action="NewAccount" method="post" onsubmit="return validateForm();">
-            <input type="text" placeholder="Naam" asp-for="Username" required>
-            <input type="email" placeholder="E-mailadres" asp-for="Email" required>
-            <input type="password" placeholder="Wachtwoord" asp-for="Password" required>
-            <input type="password" placeholder="Herhaal Wachtwoord" name="herhaalwachtwoord" required>
-            <input type="submit" value="Registreer">
-        </form>
-        @Html.ActionLink("Heb je een account. Log dan in!", "Index")
+<body class="bg-gray-100 font-sans">
+    <div class="container mx-auto mt-16">
+        <div class="max-w-md mx-auto bg-white rounded p-8 shadow-md">
+            <h2 class="text-2xl font-bold mb-8">Registratie</h2>
+            <form action="NewAccount" method="post" onsubmit="return validateForm();">
+                <input type="text" placeholder="Naam" asp-for="Username" class="w-full px-4 py-2 mb-4 border rounded-md">
+                <input type="email" placeholder="E-mailadres" asp-for="Email" class="w-full px-4 py-2 mb-4 border rounded-md">
+                <input type="password" placeholder="Wachtwoord" asp-for="Password" class="w-full px-4 py-2 mb-4 border rounded-md">
+                <input type="password" placeholder="Herhaal Wachtwoord" name="herhaalwachtwoord" class="w-full px-4 py-2 mb-4 border rounded-md">
+                <button type="submit" class="w-full bg-blue-500 text-white p-2 rounded-md hover:bg-blue-700">
+                    Registreer
+                </button>
+            </form>
+            @Html.ActionLink("Heb je een account. Log dan in!", "Index", new { @class = "mt-4 text-blue-500 block" })
+        </div>
     </div>
 
     <script>
-    function validateForm() {
-        var password = document.querySelector('input[name="Password"]').value;
-        var confirmPassword = document.querySelector('input[name="herhaalwachtwoord"]').value;
+        function validateForm() {
+            var password = document.querySelector('input[name="Password"]').value;
+            var confirmPassword = document.querySelector('input[name="herhaalwachtwoord"]').value;
 
-        if (password !== confirmPassword) {
-            alert("Wachtwoord en herhaalwachtwoord komen niet overeen");
-            return false; 
+            if (password !== confirmPassword) {
+                alert("Wachtwoord en herhaalwachtwoord komen niet overeen");
+                return false;
+            }
+
+            return true;
         }
-        
-        return true; 
-    }
-</script>
+    </script>
 </body>
 </html>
-
